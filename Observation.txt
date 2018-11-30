@@ -1,0 +1,49 @@
+PARAMETRES :
+
+------- WRITTING AND READING -----------
+Methode 1 
+N = 500
+k=30
+nanoseconds values = 36674233237 ; 35991508840 ; 36467038897  ; 36553119010   
+nanoseconds average = 36...
+secondes = 36 secondes
+
+Methode 1
+N = 1000
+k=30
+nanoseconds values = 72451845542 ; 73431259638   ; 73466236276 ; 73987328950   ;
+nanoseconds average =  73...
+secondes = 73 secondes
+
+
+Methode 2
+N = 500
+k=30
+nanoseconds values = 33781367792 ; 33636960097   ; 33680564401   ; 33670563401   
+nanoseconds average =  33 ...
+secondes = 33 secondes
+
+
+Methode 2 :
+N = 1000
+k=30
+nanoseconds values = 67600756435 ; 67129800910 ; 69380151543 ; 67692598589   
+nanoseconds average =  67... 
+secondes = 67 secondes
+
+
+Methode 3 : 
+N = 1000
+k=30
+B = 5 (un petit B)
+nanoseconds values =      
+nanoseconds average =  
+secondes = 
+
+Methode 3 : 
+N = 1000
+k=30
+B = 5  (un petit B)
+nanoseconds values =   
+nanoseconds average =  
+secondes = 
