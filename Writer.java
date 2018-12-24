@@ -75,7 +75,7 @@ class Writer {
 
     }
 
-    public IntBuffer writeOnFile_3 (IntBuffer buffer, int N){
+    public IntBuffer writeOnFile_3 (IntBuffer buffer){
         
         int bufferCapacity = buffer.capacity(); // les buffer sont 
         // initialisé avec la capacity 1 (voir Launch.java) et c'est rempli de zero au depart
@@ -84,9 +84,9 @@ class Writer {
             InputStream is = new FileInputStream(_file);
             DataInputStream ds = new DataInputStream(is);
             int x = ds.readInt();
-            for (int i = 0; i < bufferCapacity; i++){
-                    buffer.put (x);   // ecriture dans le buffer
-            }
+            //for (int i = 0; i < bufferCapacity; i++){
+            buffer.put (x);   // ecriture dans le buffer
+            //}
             ds.close();
             is.close();
         } catch (IOException e) {
@@ -109,14 +109,4 @@ class Writer {
             System.out.println("Oups.. Something went wrong with the file ...");
         }   
     }
-
-    private static Boolean isBufferHasBeenModified(IntBuffer buffer) {
-        Boolean HasBeenModified = false;
-        for (int i = 0; i < buffer.capacity(); i++) {
-            if (buffer.get(i) != 0){
-                HasBeenModified = true;
-            }
-        }
-        return HasBeenModified;
-    } 
 }

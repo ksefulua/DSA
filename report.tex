@@ -1,0 +1,204 @@
+\documentclass[14pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage{natbib}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[english]{babel} % Pour adopter les règles de typographie française
+\usepackage[T1]{fontenc} % Pour que les lettres accentuées soient reconnues
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{makeidx}
+\usepackage{lipsum}
+\usepackage{listings}
+\usepackage{authblk}
+\usepackage{float}
+\usepackage{comment} % enables the use of multi-line comments (\ifx \fi) 
+\usepackage{fullpage} % changes the margin
+
+
+\begin{document}
+%Header-Make sure you update this information!!!!
+\noindent
+\large\textbf{Database Systems Architectures Report} \hfill \textbf{6th January} \\
+\normalsize INFO H 417 \hfill Gjini Jurgen,  \\
+Prof. Vansummeren Stijn \hfill Hullebroeck Nathan, \\
+Projetc Title : Algorithms in Secondary Memory \hfill Sefu Kevin
+
+\section*{Problem Statement and Environment}
+In this project we were asked to implement an external-memory merge-sort algorithm and to make a study of its performance under various parameters. The work has been divided into two parts firstly the exploration of several different ways to read data from, and write data to secondary memory and secondly the implementation of the External multi-way merge-sort algorithm. The main goal of this project was to give us real-world experience with the performance of external-memory algorithms and to help us to have our personal vision on this subject.\\
+Our experiments were done on HP Notebook,  processor intel(R) core(TM) i3-5005U CPU @ 2.00GHz ( OS : Windows) and Details Ordi Nathan ici ->  +++ details cpu etc ..\\
+We decided to use Java.\\
++++ external librarie ????\\
+++++ how data was generated and size 
+
+
+
+\section*{Background reading and writing: streams}
+Our merge sort algorithm was supposed to be able to sort disk files containing 32 bit integers. To achieve this goal our implementation needed to read data from, and write data to disk. The first step was the development of stream classes that could sequentially read and write a ﬁle consisting of 32-bit integers. Below the java classes we used for reading/writing and a brief definition of them.
+
+    \begin{description}
+    \item[FileInput/OutputStream :] 
+    The FileInputStream class obtains input bytes from a file in a file system. This class is meant for reading  streams of raw bytes. \\
+    The FileOutputStream is a class meant for writing  streams of raw bytes.
+    
+    \item[DataInput/OutputStream :] The  DataInput/OutputStream class allows to read/write primitive Java data types from/to an input stream.
+    
+    \item[BufferedInput/OutputStream  :] The BufferedInputStream class adds functionality to another input stream-namely, the ability to buffer the input by the creation of an internal buffer.
+    
+    \item[FileChannel :] The FileChannel class provide a channel that is connected to a file. Using a file channel allow the reading/writing of data from/to a file.
+    
+    
+    \end{description}
+        \begin{figure}[H]
+	    \centering
+	    \includegraphics[width=13cm] {IO_InputOutputStreams.png}
+	    \caption{Input and Output Stream hierarchy}
+	    \label{plot12}
+	\end{figure}
+	
+	 
+\section*{Observations on stream}
+\subsection{Expected behavior}
+\paragraph{Mechanism 1} The first I/O mechanism  use two  classes of Java.io named FileInput/OutputStream and DataInput/OutputStream. 
+This implementation use a DataInput/OutputStream that is wrapped around a FileInput/OutputStream.\\
+Before running any experiment and regarding to the definitions seen in the previous section we thought that this mechanism will simply read/write streams of raw bytes and write/read primitive data types (int, char..) to/from a file.  
+
+
+\\
++++ formule 
+\paragraph{Mechanism 2}  The implementation of the second mechanism is almost similar to the first one to the difference that in this second mechanism the java.io.DataInputStream object has been wrapped around a java.io.BufferedInputStream object that itself has been wrapped around a java.io.FileInputStream object.
+\\
+For this second mechanism we excepted higher performances than the first one. In the sense that the 2nd mechanism used a BufferedInputStream object in order to improve performances by manipulating a restricted dataset. 
+
+
++++ formule  
+\paragraph{Mechanism 3} 
+For the thrid mechanism we were asked to design an I/O mechanism and to equip it with our own buffer. For this aim we decided to use the java.nio.IntBuffer class in order to implement the buffer and we reused the same reading/writing model as in the mechanism 1. 
+\\
+At first we didn't see a big difference with the previous mechanism except the fact that, instead of using the internal buffer provided by the BufferedInputStream class we used our own buffer. Therefore we were expecting almost the same behavior than the 2nd mechanism.
+
+
+
++++ formule  
+\paragraph{Mechanism 4}  The last mechanism perform the read and the write by using memory mapping. In order to write a B element portion of the input file to internal memory we used the \textit{map} method from java.nio.channels.FileChannel class.\\
+
+As said in the previous lines, we used memory mapping. This concept consist in a direct assignation of a segment of virtual memory to some portion of a file or file-like resource. This correlation is a byte-for-byte relation and once it has been established, it allow applications to treat the mapped portion as if it were primary memory. 
+
+For this last mechanism, we didn't have particular expectations because we had never used the FileChannel class and memory mapping, this implementation was something new for us.
+
+
++++ formule 
+\subsection{Observations after experimentations and researches}
+
+\paragraph{Common observations on mechanism 1, 2, 3 : } 
+We observed that the first three mechanisms used classes from Java.io while the fourth mechanism uses a class from Java.nio.
+Because of their attachment to Java.io the first three mechanisms have in common the fact that they are streams oriented which means that one or more bytes are read at a time, from a stream. Furthermore, we observed also that we can't move forth and back in the data in a stream to move forth and back in the data read from a stream, wa have to cache data in a buffer (mechanism 3).
+
+We also discover that, Java.io streams are blocking meaning that when a thread invokes a read() or write() method, that thread is blocked until there is some data to read, or the data is fully written.
+        \begin{figure}[H]
+	    \centering
+	    \includegraphics[width=10cm] {nio-vs-io-1.png}
+	    \caption{Java IO reading of data }
+	    \label{plot12}
+	\end{figure}
+
+\paragraph{Mechanism 1} For this mechanism after experimentations and researchs we discovered that our first intuition wasn't very far from truth in the sense that a DataInput/OutputStream  wrapped around a FileInput/OutputStream read/write bytes and read/write primitive java data type : 
+
+        \begin{figure}[H]
+	    \centering
+	    \includegraphics[width=11cm] {Data-streams-in-java.png}
+	    \caption{Mechanism 1 }
+	    \label{plot12}
+	\end{figure}
+
+
+\\
+\paragraph{Advantages and disadvantages} The DataInputStream wrapped around a InputStream is handy if the data we need to read/write consists of Java primitives larger than one byte each, like int,float etc.
+
+But a big disadvantage of this method is the fact that we are reading one byte at a time from a file, this can be very slow because of the huge number of reading/writing instructions. 
+
+\paragraph{Mechanism 2} Experimentation and researches we made on this mechanism though us that the BufferedInputStream class  is a kind of  inputStream that reads data from a stream and uses a buffer to optimize speed access to data. Data is basicaly read ahead of time and this reduces disk access. 
+We also observed by experimentation that, this mechanism is faster than the previous one. 
+In this mechanism, input byte are split into blocks of bytes in order to optimize as said before the access to data and to reduce the number of low-level I/O
+operations performed.
+
+        \begin{figure}[H]
+	    \centering
+	    \includegraphics[width=11cm] {mechan2.jpg}
+	    \caption{Mechanism 2 }
+	    \label{plot12}
+	\end{figure}
+	
+\paragraph{Advantages and disadvantages} Regarding advantages and disadvantages we can emphasize the fact that the bufferization allow us to solve the big problem of slowness that can be caused by the reading/writing of one byte at a time.  Rather than read/writing one byte at a time from the disk, the BufferedInputStream reads a larger block at a time into an internal buffer. 
+We can also add to mechanism two's advantages the fact that :
+\begin{enumerate}
+    \item The storage of data into blocks of byte, speed up the processing of input/output by reducing the number of reading and writing instructions
+    \item It more efficient than the mechanism 1 for large files (over 100MB)
+\end{enumerate}
+
+ A disadvantage that could be retained concerning this method, is the fact that its may require a huge number of experiments with different buffer sizes to find out which buffer size seems to produce the best performance on a specific hardware. The optimal buffer size may depend on the concrete hardware in the computer. For instance if the hard disk is anyways reading a minimum of 4KB at a time, it's foolish to use less than a 4KB buffer.
+ 
+\paragraph{Mechanism 3} By using an java.nio.IntBuffer this mechanism create a buffer in/from which data can be write/read. In java, buffers has two mode, the reading mode and the writing mode. The transition from the reading mode to the writing mode ( and write-to-read ) is done by using the flip () method. 
+Whenever the buﬀer becomes empty/full a portion of buffer size is read/written from/to the ﬁle. 
+        \begin{figure}[H]
+	    \centering
+	    \includegraphics[width=8cm] {buffer-stream.png}
+	    \caption{Mechanism 3 }
+	    \label{plot12}
+	\end{figure}
+
+
+The following image explain what we discover from our experimentation with IntBuffer. The \texttt{capacity} label determine the size of the buffer. We can only write capacity bytes, longs, chars etc. into the Buffer. Once the Buffer is full, you need to empty it before writing into it again. 
+The label \texttt{position} determine the position from which that will be read or write and finally the \texttt{limit} label determine the limit of reading/writing. In write mode the limit is equal to the capacity of the Buffer while in the reading mode the limit means the limit of how much data you can read from the buffer. Therefore the limit label is set to write position of the write mode. In other words we could only read as many bytes as were written.
+
+        \begin{figure}[H]
+	    \centering
+	    \includegraphics[width=12cm] {mech3.JPG}
+	    \caption{Mechanism 3 }
+	    \label{plot12}
+	\end{figure}
+	
+
+\paragraph{Mechanism 4} We discover that this mechanism use the principle of memory mapping. This mapping between a file and memory space enables applications, including multiple processes, to modify the file by reading and writing directly to the memory. Memory mapping increase I/O performances because accessing memory mapped files is faster than using direct read and write operations, a system call is orders of magnitude slower than a simple change to a program's local memory.
+
+        \begin{figure}[H]
+	    \centering
+	    \includegraphics[width=11cm] {mechan4b.JPG}
+	    \caption{Mechanism 4 }
+	    \label{plot12}
+	\end{figure}
+	
+\paragraph{Advantages and disadvantages} As said before, this method increase I/O performances by using the princple explained in the lines above but one disadvantage that could be retained about this method is the fact that a file section larger than the addressable space can have only portions mapped at a time, this may complicate the reading process.
+
+\subsection{Discussion of expected behavior vs experimental observations}
+
+We have found that in a general, experimentations and implementations of these mechanisms helped us to learn many new things (Mechanism 4). The knowledge we had about these different mechanisms was mostly incomplete (Mechanism 4) or partial (Mechanism 2, 3). The implementation and research that we have done on these modes of writing and reading have allowed us to improve our understanding of the internal behavior of each mechanism.
+\subsection*{Optimum Solution and Process of this discovery}
+
+
+\section*{Sources}
+
+\begin{enumerate}
+    
+    \item  Database Systems: The Complete Book (second, international edition)" by H. Garcia-Molina, J. D. Ullman, and J. Widom (ISBN-13: 978-0131354289)
+    
+    \item \href{https://docs.oracle.com/javase/7/docs/api/overview-summary.html}{Java™ Platform, Standard Edition 7
+    API Specification}
+    \item  \href{https://www.google.com/search?q=input+stream+hierarchy&source=lnms&tbm=isch&sa=X&ved=0ahUKEwj9n9eWpZ_fAhUKzKQKHfaACb0Q_AUIDigB&biw=1366&bih=646#imgrc=Xbj3BKTrSTNGZM:}{Figure 1 : Input and Out Stream hierarchy }
+    
+    \item \href{http://tutorials.jenkov.com/java-nio/nio-vs-io.html}{Figure 2: Java Io reading of data}
+    
+    \item \href{https://www.google.com/search?biw=1366&bih=646&tbm=isch&sa=1&ei=kZ4TXPP5G461sAeWxKWgAw&q=datainputstream&oq=datainputstream&gs_l=img.3..35i39j0i19.74343.80934..81271...0.0..0.86.918.15......1....1..gws-wiz-img.......0j0i67j0i30i19.Rg1qcvj8v9Y#imgrc=MRbSWbZnatg-8M:}{Figure 3: Mechanism 1}
+    
+    \item \href{https://www.google.com/search?biw=1366&bih=646&tbm=isch&sa=1&ei=050TXIeND8jSkgWJmJb4AQ&q=fileinputstream+in+java&oq=fileInput&gs_l=img.3.0.0i19l2j0i30i19.182482.184642..188772...0.0..0.68.561.9......1....1..gws-wiz-img.......0j35i39j0i67j0i30j0i5i10i30j0i10i19j0i5i10i30i19j0i5i30i19.OTF1fI5reag#imgrc=m6lNYaxceTUCoM:}{Figure 4: Mechanism 2}
+    
+    \item \href{https://www.google.com/search?biw=1366&bih=646&tbm=isch&sa=1&ei=L6ATXPnGPNKYkwXX-4qgDQ&q=buffer+java&oq=buffer+java&gs_l=img.3..0i19j0i8i30i19.2357.3835..4507...0.0..0.72.323.5......1....1..gws-wiz-img.......0j0i67j0i10i19j0i30i19j0i5i30i19.KntnYA7ZfZM#imgdii=My8OPyhCq7u_6M:&imgrc=GGdCTHcprGiAaM:}{Figure 5 : Mechanism 3 }
+    
+    \item \href{http://tutorials.jenkov.com/java-nio/buffers.html}{Figure 6 : Mechanism 3 }
+    
+    \item \href{https://www.google.com/search?biw=1366&bih=646&tbm=isch&sa=1&ei=1p8TXOnAGsLWwQLj56rYBg&q=memory-mapped+file&oq=memory&gs_l=img.3.0.35i39l2j0l8.28492.29811..31289...0.0..0.66.373.6......1....1..gws-wiz-img.......0i67.HAODKhJsJ24#imgrc=OSoWWby55ER2jM:}{Figure 4 : Mechanism 4}
+    
+    \item \href{http://tutorials.jenkov.com/}{Jenkov Aps}
+    
+\end{enumerate}
+\end{document}

@@ -63,17 +63,17 @@ class Reader {
     public void readFile_3 (IntBuffer buffer) {
 
             int bufferCapacity = buffer.capacity(); 
-            for (int i=0; i<bufferCapacity; i++){
-              int x =  buffer.get(i);
-            } 
+            //for (int i=0; i<bufferCapacity; i++){
+            int x =  buffer.get(i);
+            //} 
     }
 
     public void readFile_4 (MappedByteBuffer mappedRegion) {
 
-        int size = mappedRegion.capacity();
-        for (int i = 0; i < size; i++) {
+        //int size = mappedRegion.capacity();
+        //for (int i = 0; i < size; i++) {
             int x = mappedRegion.get(i); // lecture du contenu mapper
-        }
+        //}
         
         /*
         comment ecrire le contenu de la region mapper dans un autre fichier.
