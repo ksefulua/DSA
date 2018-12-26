@@ -4,25 +4,30 @@ import java.nio.MappedByteBuffer;
 import java.nio.file.StandardOpenOption;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class Input4 extends Input {
-    private final int INTSIZE = 4;
-    MappedByteBuffer mappedRegion;
-    FileChannel fileChannel;
-    int i;
-    int allreadyMaped;
-    int B;
-    long totalSize;
+    private static final int INTSIZE = 4;
+    private MappedByteBuffer mappedRegion;
+    private FileChannel fileChannel;
+    private int i;
+    private int allreadyMaped;
+    private static int B = 1000;
+    private long totalSize;
 
-    public Input4(File file, int B) throws IOException {
-        this.B = B;
+
+    @Override public void open(String filename){
         allreadyMaped = 0;
         i=0;
-        Path path = file.toPath();
-        totalSize = file.length();
-        fileChannel = FileChannel.open(path, StandardOpenOption.READ);
-        mapping();
+        try {
+            File file = new File(filename);
+            Path path = file.toPath();
+            totalSize = file.length();
+            fileChannel = FileChannel.open(path, StandardOpenOption.READ);
+            mapping();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
     }
 
     public void  mapping() throws IOException{
@@ -31,22 +36,18 @@ public class Input4 extends Input {
     }
 
     @Override
-    public int getNext() throws IOException{
+    public int readNext() throws IOException{
         i += 4;
         current = mappedRegion.getInt();
-        if(i>= allreadyMaped && hasNext()) {
+        if(i>= allreadyMaped && !endOfStream()) {
             mapping();
         }
         return current;
     }
 
     @Override
-    public boolean hasNext() {
-        return i < totalSize;
-    }
-
-    @Override
-    public void close() {
+    public boolean endOfStream() {
+        return !(i < totalSize);
     }
 
 }

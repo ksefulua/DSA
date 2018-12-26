@@ -7,31 +7,41 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 
 public class Input2 extends Input {
-    InputStream is;
-    BufferedInputStream bis;
-    DataInputStream ds;
+    private InputStream is;
+    private BufferedInputStream bis;
+    private DataInputStream ds;
 
-    public Input2(File file) throws FileNotFoundException {
-        is = new FileInputStream(file);
-        bis = new BufferedInputStream(is);
-        ds  = new DataInputStream(bis);
+
+    @Override
+    public void open(String fileName){
+        try {
+            is = new FileInputStream(new File(fileName));
+            bis = new BufferedInputStream(is);
+            ds = new DataInputStream(bis);
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override
-    public int getNext() throws IOException{
-        current = ds.readInt();
+    public int readNext(){
+        try{
+            current = ds.readInt();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
         return current;
     }
 
     @Override
-    public boolean hasNext() throws IOException{
-        return ds.available() > 0;
+    public boolean endOfStream(){
+        try {
+            return !(ds.available() > 0);
+        }catch (IOException e){
+            e.printStackTrace();
+            return true;
+        }
     }
 
-    @Override
-    public void close() throws IOException{
-        ds.close();
-        bis.close();
-        is.close();
-    }
 }

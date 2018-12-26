@@ -9,8 +9,8 @@ public class MWMS {
     public MWMS(List<Input> d_inputStream) throws IOException {
         queue = new PriorityQueue<Input>();
         for(Input input : d_inputStream) {
-            if(input.hasNext()) {
-                input.getNext();
+            if(!(input.endOfStream())) {
+                input.readNext();
                 queue.add(input);
             }
         }
@@ -20,8 +20,8 @@ public class MWMS {
         while(!queue.isEmpty()) {
             Input in = queue.poll();
             out.writeInt(in.getCurrentValue());
-            if(in.hasNext()) {
-                in.getNext();
+            if(!(in.endOfStream())) {
+                in.readNext();
                 queue.add(in);
             }
         }

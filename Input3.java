@@ -1,48 +1,50 @@
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+
 import java.nio.IntBuffer;
 import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.io.File;
 
 public class Input3 extends Input {
-    IntBuffer buffer;
-    int i;
-    int bufferUse;
-    Input1 input;
+    private IntBuffer buffer;
+    private int i;
+    private int bufferUse;
+    private static int bufferSize = 100;
+    private Input1 input;
 
-    public Input3(File fileName, int B) throws IOException {
-        input = new Input1(fileName);
-        buffer = IntBuffer.allocate(B);
+
+    @Override
+    public void open(String fileName){
+        input = new Input1();
+        input.open(fileName);
+        buffer = IntBuffer.allocate(bufferSize);
         fillBuffer();
+
     }
 
-    private void fillBuffer() throws IOException{
+    private void fillBuffer(){
         bufferUse = 0;
         i = 0;
         buffer.clear();
-        while(input.hasNext() && bufferUse < buffer.capacity()  ) {
-            buffer.put(input.getNext());
+        while (!input.endOfStream() && bufferUse < buffer.capacity()) {
+            buffer.put(input.readNext());
             ++bufferUse;
         }
+
     }
 
     @Override
-    public int getNext() throws IOException {
+    public int readNext() {
         current = buffer.get(i);
         ++i;
-        if(!hasNext()) {
+        if(endOfStream()) {
             fillBuffer();
         }
         return current;
     }
 
     @Override
-    public boolean hasNext() {
-        return i < bufferUse;
-    }
-
-    @Override
-    public void close() throws IOException{
-        input.close();
+    public boolean endOfStream() {
+        return !(i < bufferUse);
     }
 
 }

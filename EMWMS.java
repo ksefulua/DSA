@@ -6,16 +6,20 @@ import java.io.IOException;
 
 public class EMWMS {
 
-    int M;
-    File fileToSort;
-    int memoryAvailable[];
-    List<Input> sortedInput;
-    int tempFile;
-    int d;
+    private int M;
+    private String fileToSort;
+    private int memoryAvailable[];
+    private List<Input> sortedInput;
+    private int tempFile;
+    private int d;
+    private Input inputStream;
+    private int fileSize;
 
-    public EMWMS(int M, int d, File fileToSort) throws IOException {
+    public EMWMS(int M, int d, String fileToSort, Input inputStream) throws IOException {
         this.M = M;
         this.fileToSort = fileToSort;
+        this.fileSize = (int) (new File(fileToSort).length() / (long) 4);
+        this.inputStream = inputStream;
         this.d = d;
         memoryAvailable = new int[M];
         sortedInput = new LinkedList<Input>();
@@ -24,13 +28,12 @@ public class EMWMS {
     }
 
     private  void sort() throws IOException {
-        int N = (int) (fileToSort.length() / (long)4); //length return the size in byte
         int alreadySort = 0;
-        Input input = new Input1(fileToSort);
-        for(int i = 0 ; i < Math.ceil(N / M) ; i++ ) {
-            int numberToSort = Math.min(M, N - alreadySort);
+        inputStream.open(fileToSort);
+        for(int i = 0 ; i < Math.ceil(fileSize / M) ; i++ ) {
+            int numberToSort = Math.min(M, fileSize - alreadySort);
             for(int j = 0 ; j < numberToSort; j++ ) {
-                memoryAvailable[j] = input.getNext();
+                memoryAvailable[j] = inputStream.readNext();
             }
             randomizedQuickSort(0, numberToSort - 1);
             sortedInput.add(save());
@@ -64,13 +67,27 @@ public class EMWMS {
     }
 
     private Input save() throws IOException{
-        File tempFIle = new File("temp" + ++tempFile + ".txt");
+        String fileName = "temp" + ++tempFile + ".txt";
+        File tempFIle = new File(fileName);
         Output out = new Output1(tempFIle);
         for(int i : memoryAvailable) {
             out.writeInt(i);
         }
         out.close();
-        return new Input1(tempFIle);
+
+        return getFreshInputStream(fileName);
+    }
+
+    private Input getFreshInputStream(String filepath) {
+        Input input;
+        try {
+            input = this.inputStream.getClass().newInstance();
+            input.open(filepath);
+            return input;
+        }catch (InstantiationException | IllegalAccessException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private void mergePhase() throws IOException{
@@ -82,13 +99,14 @@ public class EMWMS {
                 ++j;
             }
             MWMS combine = new MWMS(toCombine);
-            File tempFIle = new File("temp" + ++tempFile + ".txt");
+            String fileName = "temp" + ++tempFile + ".txt";
+            File tempFIle = new File(fileName);
             combine.merge(new Output1(tempFIle));
-            sortedInput.add(new Input1(tempFIle));
+            sortedInput.add(getFreshInputStream(fileName));
         }
         Input in = sortedInput.remove(0);
-        while(in.hasNext()){
-            System.out.print(in.getNext()+ " ");
+        while(in.endOfStream()){
+            System.out.print(in.readNext()+ " ");
         }
         System.out.println();
         for(int i = 0 ; i < tempFile ; i++ ){

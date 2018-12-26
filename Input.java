@@ -4,15 +4,16 @@ public abstract class Input implements Comparable<Input> {
 
     int current;
 
-    public abstract int getNext() throws IOException;
+    public abstract void open(String fileName);
 
-    public abstract boolean hasNext() throws IOException;
+    public abstract int readNext() throws IOException;
+
+    public abstract boolean endOfStream() throws IOException;
 
     public int getCurrentValue() {
         return current;
     }
 
-    public abstract void close() throws IOException;
 
     @Override
     public int compareTo(Input other) {
