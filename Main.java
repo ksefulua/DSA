@@ -16,8 +16,8 @@ public class Main {
             a.writeOnfile_2();
 
             Input i1 = new Input1();
-            /*
             i1.open("1.txt");
+            /*
             while (!i1.endOfStream()){
                 System.out.println(i1.readNext());
             }
