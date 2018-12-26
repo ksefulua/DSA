@@ -1,8 +1,10 @@
 import java.io.IOException;
 
 public interface Output{
-    
-    public void writeInt(int toWrite) throws IOException;
 
-    public void close() throws IOException;
+    void create(String filePath);
+
+    void write(int toWrite) throws IOException;
+
+    void close() throws IOException;
 }

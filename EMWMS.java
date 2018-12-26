@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.Random;
 import java.io.IOException;
 
+
 public class EMWMS {
 
     private int M;
@@ -13,13 +14,15 @@ public class EMWMS {
     private int tempFile;
     private int d;
     private Input inputStream;
+    private Output outpoutStream;
     private int fileSize;
 
-    public EMWMS(int M, int d, String fileToSort, Input inputStream) throws IOException {
+    public EMWMS(int M, int d, String fileToSort, Input inputStream, Output outputStream) throws IOException {
         this.M = M;
         this.fileToSort = fileToSort;
         this.fileSize = (int) (new File(fileToSort).length() / (long) 4);
         this.inputStream = inputStream;
+        this.outpoutStream = outputStream;
         this.d = d;
         memoryAvailable = new int[M];
         sortedInput = new LinkedList<Input>();
@@ -68,10 +71,10 @@ public class EMWMS {
 
     private Input save() throws IOException{
         String fileName = "temp" + ++tempFile + ".txt";
-        File tempFIle = new File(fileName);
-        Output out = new Output1(tempFIle);
+
+        Output out = getFreshOutputStream(fileName);
         for(int i : memoryAvailable) {
-            out.writeInt(i);
+            out.write(i);
         }
         out.close();
 
@@ -79,11 +82,22 @@ public class EMWMS {
     }
 
     private Input getFreshInputStream(String filepath) {
-        Input input;
+
         try {
-            input = this.inputStream.getClass().newInstance();
+            Input input = this.inputStream.getClass().newInstance();
             input.open(filepath);
             return input;
+        }catch (InstantiationException | IllegalAccessException e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private Output getFreshOutputStream(String filePath){
+        try {
+            Output outputStream = this.outpoutStream.getClass().newInstance();
+            outputStream.create(filePath);
+            return outputStream;
         }catch (InstantiationException | IllegalAccessException e){
             e.printStackTrace();
             return null;
@@ -100,12 +114,13 @@ public class EMWMS {
             }
             MWMS combine = new MWMS(toCombine);
             String fileName = "temp" + ++tempFile + ".txt";
-            File tempFIle = new File(fileName);
-            combine.merge(new Output1(tempFIle));
+
+            combine.merge(getFreshOutputStream(fileName));
+
             sortedInput.add(getFreshInputStream(fileName));
         }
         Input in = sortedInput.remove(0);
-        while(in.endOfStream()){
+        while(!in.endOfStream()){
             System.out.print(in.readNext()+ " ");
         }
         System.out.println();

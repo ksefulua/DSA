@@ -5,22 +5,35 @@ import java.io.DataOutputStream;
 import java.io.File;
 
 public class Output1 implements Output {
-    OutputStream os;
-    DataOutputStream dos;
+    private OutputStream os;
+    private DataOutputStream dos;
 
-    public Output1(File file) throws IOException{
-        os = new FileOutputStream (file);
-        dos = new DataOutputStream(os);
+
+    @Override public void create(String fileName){
+        try {
+            os = new FileOutputStream (new File(fileName));
+            dos = new DataOutputStream(os);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void writeInt(int toWrite) throws IOException{
-        dos.writeInt(toWrite);
+    public void write(int integer) throws IOException{
+        try {
+            dos.writeInt(integer);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void close() throws IOException{
-        dos.close();
-        os.close();
+        try {
+            dos.close();
+            os.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 }

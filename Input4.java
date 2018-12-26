@@ -30,7 +30,7 @@ public class Input4 extends Input {
 
     }
 
-    public void  mapping() throws IOException{
+    private void  mapping() throws IOException{
         mappedRegion = fileChannel.map(FileChannel.MapMode.READ_ONLY, allreadyMaped, Math.max((long)B*INTSIZE,totalSize));
         allreadyMaped += mappedRegion.capacity();
     }
