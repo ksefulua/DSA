@@ -11,34 +11,29 @@ public class Input2 extends Input {
     private BufferedInputStream bis;
     private DataInputStream ds;
 
-
-    @Override
-    public void open(String fileName){
-        try {
-            is = new FileInputStream(new File(fileName));
-            bis = new BufferedInputStream(is);
-            ds = new DataInputStream(bis);
-        }catch (FileNotFoundException e){
-            e.printStackTrace();
-        }
-
+    public Input2(File file) throws IOException{
+        is = new FileInputStream(file);
+        bis = new BufferedInputStream(is);
+        ds = new DataInputStream(bis);
     }
 
     @Override
-    public int readNext(){
-        try{
+    public int readNext() {
+        try {
             current = ds.readInt();
-        }catch (IOException e){
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
         return current;
     }
 
     @Override
-    public boolean endOfStream(){
+    public boolean endOfStream() {
         try {
             return !(ds.available() > 0);
-        }catch (IOException e){
+        }
+        catch (IOException e) {
             e.printStackTrace();
             return true;
         }

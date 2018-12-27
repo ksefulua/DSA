@@ -1,8 +1,6 @@
 import java.io.IOException;
 
-public interface Output{
-
-    void create(String filePath);
+public interface Output {
 
     void write(int toWrite) throws IOException;
 

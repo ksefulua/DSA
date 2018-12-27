@@ -9,38 +9,28 @@ public class Input1 extends Input {
     private InputStream is;
     private DataInputStream ds;
 
-    /*
     public Input1(File file) throws IOException, FileNotFoundException {
         is = new FileInputStream(file);
         ds  = new DataInputStream(is);
     }
-    */
 
     @Override
-    public void open(String filename){
-        try{
-            is = new FileInputStream(new File(filename));
-            ds  = new DataInputStream(is);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public int readNext(){
+    public int readNext() {
         try {
             current = ds.readInt();
-        }catch (IOException e){
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
         return current;
     }
 
     @Override
-    public boolean endOfStream(){
+    public boolean endOfStream() {
         try {
             return !(ds.available() > 0);
-        }catch (IOException e){
+        }
+        catch (IOException e) {
             e.printStackTrace();
             return true;
         }

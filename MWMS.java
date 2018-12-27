@@ -19,11 +19,12 @@ public class MWMS {
     public void merge(Output out) throws IOException {
         while(!queue.isEmpty()) {
             Input in = queue.poll();
-            out.writeInt(in.getCurrentValue());
+            out.write(in.getCurrentValue());
             if(!(in.endOfStream())) {
                 in.readNext();
                 queue.add(in);
             }
         }
+        out.close();
     }
 }

@@ -10,43 +10,39 @@ public class Input4 extends Input {
     private FileChannel ifc;
     private int i = 0;
     private int n = 0;
-    private static int BUFF_SIZE = 59 * INTSIZE;
+    private final int BUFF_SIZE;
     private long mappedPortionSize;
     private long totalSize;
 
 
-    @Override public void open(String fileName){
-        try {
-            ifc = new RandomAccessFile(new File(fileName), "r").getChannel();
-            totalSize = ifc.size();
-            mappedPortionSize = Math.min((long) BUFF_SIZE ,totalSize);
-            mappedRegion = ifc.map(FileChannel.MapMode.READ_ONLY, n, mappedPortionSize);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
+    public Input4(File file, int B) throws IOException {
+        BUFF_SIZE = B * INTSIZE;
+        ifc = new RandomAccessFile(file, "r").getChannel();
+        totalSize = ifc.size();
+        mappedPortionSize = Math.min((long) BUFF_SIZE, totalSize);
+        mappedRegion = ifc.map(FileChannel.MapMode.READ_ONLY, n, mappedPortionSize);
     }
 
-    private void mapNextFileChunk(){
+    private void mapNextFileChunk() {
         mappedPortionSize = Math.max(BUFF_SIZE, totalSize - n - i);
         n += i;
         i = 0;
         mappedRegion.clear();
         try {
             mappedRegion = ifc.map(FileChannel.MapMode.READ_ONLY, n, mappedPortionSize);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public int readNext(){
-        if (filePortionIsRead()){
+    public int readNext() {
+        if (filePortionIsRead()) {
             mapNextFileChunk();
         }
         current = mappedRegion.getInt();
         i += INTSIZE;
-
         return current;
     }
 
@@ -55,7 +51,7 @@ public class Input4 extends Input {
         return totalSize - n - i <= 0;
     }
 
-    private boolean filePortionIsRead(){
+    private boolean filePortionIsRead() {
         return (mappedRegion.position() == mappedRegion.capacity());
     }
 

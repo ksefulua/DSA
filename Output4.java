@@ -10,20 +10,17 @@ public class Output4 implements Output {
     private FileChannel ofc;
     private MappedByteBuffer mbb;
     private static final int INT_SIZE = Integer.BYTES;
-    private static int BUFFERSIZE = INT_SIZE * 50;
+    private final int BUFFERSIZE;
 
-    @Override public void create(String fileName){
-        try {
-            ofc = new RandomAccessFile(new File(fileName), "rw").getChannel();
-            mbb = ofc.map(FileChannel.MapMode.READ_WRITE, 0, BUFFERSIZE);
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+    public Output4(File file, int B) throws IOException {
+        BUFFERSIZE = B * INT_SIZE;
+        ofc = new RandomAccessFile(file, "rw").getChannel();
+        mbb = ofc.map(FileChannel.MapMode.READ_WRITE, n, BUFFERSIZE);
     }
 
     @Override
-    public void write(int integer){
-        if(isFull()){
+    public void write(int integer) {
+        if(isFull()) {
             flushBuffer();
         }
         mbb.putInt(integer);
@@ -31,26 +28,28 @@ public class Output4 implements Output {
     }
 
     @Override
-    public void close(){
+    public void close() {
         try {
             ofc.close();
-        }catch (IOException e){
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void flushBuffer(){
+    private void flushBuffer() {
         n += i;
         i = 0;
         try {
             mbb.clear();
             mbb = ofc.map(FileChannel.MapMode.READ_WRITE, n, BUFFERSIZE);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private boolean isFull(){
+    private boolean isFull() {
         return ((BUFFERSIZE - i) < INT_SIZE);
     }
 
