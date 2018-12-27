@@ -10,7 +10,7 @@ public class Input3 extends Input {
 
     public Input3(File file, int B) throws IOException{
         input = new Input1(file);
-        buffer = IntBuffer.allocate(B);
+        buffer = IntBuffer.allocate(B*Integer.BYTES);
         fillBuffer();
     }
 

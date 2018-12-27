@@ -19,7 +19,7 @@ public class Input4 extends Input {
         BUFF_SIZE = B * INTSIZE;
         ifc = new RandomAccessFile(file, "r").getChannel();
         totalSize = ifc.size();
-        mappedPortionSize = Math.min((long) BUFF_SIZE, totalSize);
+        mappedPortionSize = Math.max((long) BUFF_SIZE, totalSize);
         mappedRegion = ifc.map(FileChannel.MapMode.READ_ONLY, n, mappedPortionSize);
     }
 

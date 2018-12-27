@@ -35,7 +35,7 @@ public class Main {
 
     public void deleteOutputfiles(int k){
         for(int i = 0 ; i < k ; i++ ){
-            File file = new File("output/output_" + i);
+            File file = new File("output\\output_" + i);
             file.delete();
         }
     }
@@ -52,12 +52,12 @@ public class Main {
         InputFactory i3 = new Input3Factory(10000);
         InputFactory i4 = new Input4Factory(1000);
 
-        int K = 6;
-        int N = 30000;
+        int K = 5;
+        int N = 25000000;
         int averageOver = 1;
-        int maxBufferSize = 20000;
+        int maxBufferSize = 20000000;
         int minBufferSize = 20;
-        int stepBufferSize = 100;
+        int stepBufferSize = 10;
 
         /*
         for(int j = 1 ; j <= K ; j++ ) {
@@ -82,7 +82,7 @@ public class Main {
                 obj.inputTest(i4, "Input 4", j);
             }
         }
-        */
+
 
         for(int bufferSize = minBufferSize ; bufferSize <= maxBufferSize ; bufferSize *= stepBufferSize){
             for(int i = 0 ; i < averageOver ; i++ ){
@@ -90,15 +90,15 @@ public class Main {
                 obj.inputTest(i4, "Input 4 B_"+ bufferSize, K);
             }
         }
-
-        for(int bufferSize = minBufferSize; bufferSize <= maxBufferSize ; bufferSize *= stepBufferSize){
+*/
+        for(int bufferSize = minBufferSize*100000; bufferSize <= maxBufferSize ; bufferSize *= stepBufferSize){
             for(int i = 0 ; i < averageOver ; i++ ){
                 o4 = new Output4Factory(bufferSize);
                 obj.outputTest(o4, "Output 4 B_"+ bufferSize, K, N);
                 obj.deleteOutputfiles(K);
             }
         }
-
+       /*
         for(int bufferSize = minBufferSize ; bufferSize <= maxBufferSize ; bufferSize *= stepBufferSize){
             for(int i = 0 ; i < averageOver ; i++ ){
                 i3 = new Input3Factory(bufferSize);
@@ -114,7 +114,7 @@ public class Main {
 
             }
         }
-
+        */
     }
 
 }

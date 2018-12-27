@@ -9,7 +9,7 @@ public class SpeedTest {
 
     public void speedTestInPut(int K, InputFactory iFactory) {
         ExecutorService ex = Executors.newFixedThreadPool(K);
-        for( int e = 0; e <= K; e++) {
+        for( int e = 0; e < K; e++) {
             Runnable inputThread = new InputRunnable(e, iFactory);
             ex.execute(inputThread);
         }
@@ -28,7 +28,7 @@ public class SpeedTest {
         @Override
         public void run() {
             try {
-                Input input = iFactory.getFreshInputStream("testFiles/testfile_" + i);
+                Input input = iFactory.getFreshInputStream("testFiles\\testfile_" + i);
                 while (!input.endOfStream()) {
                     input.readNext();
                 }
@@ -63,7 +63,7 @@ public class SpeedTest {
         @Override
         public void run() {
             try {
-                Output output = iFactory.getFreshOutputStream("output/output_" + i);
+                Output output = iFactory.getFreshOutputStream("output\\output_" + i);
                 for (int i : numbers) {
                     output.write(i);
                 }
