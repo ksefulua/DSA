@@ -7,32 +7,33 @@ import java.util.concurrent.Executors;
 public class SpeedTest {
     private static int[] numbers;
 
-    public void speedTestInPut(int N, int K, InputFactory iFactory) {
+    public void speedTestInPut(int K, InputFactory iFactory) {
         ExecutorService ex = Executors.newFixedThreadPool(K);
         for( int e = 0; e <= K; e++) {
             Runnable inputThread = new InputRunnable(e, iFactory);
             ex.execute(inputThread);
         }
-        while (!ex.isTerminated()){}
-        System.out.println("Done");
+        ex.shutdown();
+        while (!ex.isTerminated()) {}
     }
 
     public static class InputRunnable implements Runnable {
         private final int i;
         private final InputFactory iFactory;
 
-        InputRunnable(int i, InputFactory iFactory){
+        InputRunnable(int i, InputFactory iFactory) {
             this.i = i;
             this.iFactory = iFactory;
         }
         @Override
-        public void run(){
+        public void run() {
             try {
                 Input input = iFactory.getFreshInputStream("testFiles/testfile_" + i);
-                while (!input.endOfStream()){
+                while (!input.endOfStream()) {
                     input.readNext();
                 }
-            }catch (IOException e){
+            }
+            catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -43,31 +44,32 @@ public class SpeedTest {
         numbers = gen.generateNumbers();
 
         ExecutorService ex = Executors.newFixedThreadPool(k);
-        for( int e = 0; e <= k; e++) {
+        for( int e = 0; e < k; e++) {
             Runnable outputThread = new OutputRunnable(e, oFactory);
             ex.execute(outputThread);
         }
-        while (!ex.isTerminated()){}
-        System.out.println("Done");
+        ex.shutdown();
+        while (!ex.isTerminated()) {}
     }
 
     public static class OutputRunnable implements Runnable {
         private final int i;
         private final OutputFactory iFactory;
 
-        OutputRunnable(int i, OutputFactory iFactory){
+        OutputRunnable(int i, OutputFactory iFactory) {
             this.i = i;
             this.iFactory = iFactory;
         }
         @Override
-        public void run(){
+        public void run() {
             try {
                 Output output = iFactory.getFreshOutputStream("output/output_" + i);
-                for (int i : numbers){
+                for (int i : numbers) {
                     output.write(i);
                 }
                 output.close();
-            }catch (IOException e){
+            }
+            catch (IOException e) {
                 e.printStackTrace();
             }
         }

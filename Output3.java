@@ -2,12 +2,14 @@ import java.io.*;
 import java.nio.IntBuffer;
 
 public class Output3 implements Output {
-    private Output1 out;
+    private OutputStream os;
+    private DataOutputStream dos;
     private IntBuffer buffer;
     private static int BUFFERSIZE = Integer.BYTES * 100;
 
     public Output3(File file, int B)  throws IOException{
-        out = new Output1(file);
+        os = new FileOutputStream (file);
+        dos = new DataOutputStream(os);
         buffer = IntBuffer.allocate(B);
     }
 
@@ -21,7 +23,7 @@ public class Output3 implements Output {
     private void flushBuffer() throws IOException{
         buffer.flip();
         while (buffer.hasRemaining()) {
-            out.write(buffer.get());
+            dos.write(buffer.get());
         }
         buffer.clear();
     }
@@ -29,6 +31,7 @@ public class Output3 implements Output {
     @Override
     public void close()  throws IOException{
         flushBuffer();
-        out.close();
+        os.close();
+        dos.close();
     }
 }
