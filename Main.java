@@ -3,6 +3,7 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.perf4j.StopWatch;
 import org.perf4j.log4j.Log4JStopWatch;
+import java.io.File;
 
 public class Main {
 
@@ -32,6 +33,13 @@ public class Main {
         }
     }
 
+    public void deleteOutputfiles(int k){
+        for(int i = 0 ; i < k ; i++ ){
+            File file = new File("output/output_" + i);
+            file.delete();
+        }
+    }
+
     public static void main(String[] args)  throws IOException{
         Main obj = new Main();
         OutputFactory o1 = new Output1Factory();
@@ -44,10 +52,10 @@ public class Main {
         InputFactory i3 = new Input3Factory(10000);
         InputFactory i4 = new Input4Factory(1000);
 
-        int K = 30;
-        int N = 37500000;
+        int K = 6;
+        int N = 30000;
         int averageOver = 1;
-        int maxBufferSize = 20000000;
+        int maxBufferSize = 20000;
         int minBufferSize = 20;
         int stepBufferSize = 100;
 
@@ -78,20 +86,35 @@ public class Main {
 
         for(int bufferSize = minBufferSize ; bufferSize <= maxBufferSize ; bufferSize *= stepBufferSize){
             for(int i = 0 ; i < averageOver ; i++ ){
-                i3 = new Input3Factory(bufferSize);
                 i4 = new Input4Factory(bufferSize);
-                obj.inputTest(i3, "Input 3 B_"+ bufferSize , K);
                 obj.inputTest(i4, "Input 4 B_"+ bufferSize, K);
             }
         }
 
         for(int bufferSize = minBufferSize; bufferSize <= maxBufferSize ; bufferSize *= stepBufferSize){
             for(int i = 0 ; i < averageOver ; i++ ){
-                o3 = new Output3Factory(bufferSize);
                 o4 = new Output4Factory(bufferSize);
-                obj.outputTest(o3, "Output 3 B_"+ bufferSize , K, N);
                 obj.outputTest(o4, "Output 4 B_"+ bufferSize, K, N);
+                obj.deleteOutputfiles(K);
             }
         }
+
+        for(int bufferSize = minBufferSize ; bufferSize <= maxBufferSize ; bufferSize *= stepBufferSize){
+            for(int i = 0 ; i < averageOver ; i++ ){
+                i3 = new Input3Factory(bufferSize);
+                obj.inputTest(i3, "Input 3 B_"+ bufferSize , K);
+            }
+        }
+
+        for(int bufferSize = minBufferSize; bufferSize <= maxBufferSize ; bufferSize *= stepBufferSize){
+            for(int i = 0 ; i < averageOver ; i++ ){
+                o3 = new Output3Factory(bufferSize);
+                obj.outputTest(o3, "Output 3 B_"+ bufferSize , K, N);
+                obj.deleteOutputfiles(K);
+
+            }
+        }
+
     }
+
 }
