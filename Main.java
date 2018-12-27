@@ -38,12 +38,20 @@ public class Main {
         OutputFactory o2 = new Output2Factory();
         OutputFactory o3 = new Output3Factory(10000);
         OutputFactory o4 = new Output4Factory(1000);
-        int K = 3;
-        int N = 375000;
+
+        InputFactory i1 = new Input1Factory();
+        InputFactory i2 = new Input2Factory();
+        InputFactory i3 = new Input3Factory(10000);
+        InputFactory i4 = new Input4Factory(1000);
+
+        int K = 30;
+        int N = 37500000;
         int averageOver = 1;
-        int maxBufferSize = 100;
-        int minBufferSize = 10;
-        int stepBufferSize = 2;
+        int maxBufferSize = 20000000;
+        int minBufferSize = 20;
+        int stepBufferSize = 100;
+
+        /*
         for(int j = 1 ; j <= K ; j++ ) {
             for(int i = 0 ; i < averageOver ; i++ ) {
                 obj.outputTest(o1, "Output 1", j, N);
@@ -57,10 +65,7 @@ public class Main {
         gen.generateFiles();
 
 
-        InputFactory i1 = new Input1Factory();
-        InputFactory i2 = new Input2Factory();
-        InputFactory i3 = new Input3Factory(10000);
-        InputFactory i4 = new Input4Factory(1000);
+
         for(int j = 1 ; j <= K ; j++ ) {
             for(int i = 0 ; i < averageOver ; i++ ) {
                 obj.inputTest(i1, "Input 1", j);
@@ -69,6 +74,7 @@ public class Main {
                 obj.inputTest(i4, "Input 4", j);
             }
         }
+        */
 
         for(int bufferSize = minBufferSize ; bufferSize <= maxBufferSize ; bufferSize *= stepBufferSize){
             for(int i = 0 ; i < averageOver ; i++ ){
@@ -87,6 +93,5 @@ public class Main {
                 obj.outputTest(o4, "Output 4 B_"+ bufferSize, K, N);
             }
         }
-
     }
 }
