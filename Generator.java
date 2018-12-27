@@ -1,7 +1,8 @@
+import java.io.IOException;
 import java.util.*;
 import java.util.Random;
 import java.util.stream.IntStream;
-
+import java.io.File;
 //50 is the maximum and the 1 is our minimum
 class Generator {
 
@@ -18,5 +19,16 @@ class Generator {
 
     public int[] generateNumbers () {
         return _rand.ints(_numberOfint, MIN_VALUE, MAX_VALUE).toArray();
+    }
+
+    public void generateFiles() throws IOException {
+        for(int i = 0; i < 30; i++){
+            String filename = "testFiles/testfile_" + i;
+            Output o = new Output4(new File(filename),10000000);
+            int[] numbers = generateNumbers();
+            for (int j : numbers){
+                o.write(j);
+            }
+        }
     }
 }
