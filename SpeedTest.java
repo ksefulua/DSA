@@ -5,7 +5,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class SpeedTest {
-
+    private static int[] numbers;
 
     public void speedTestInPut(int N, int K, InputFactory iFactory) {
         ExecutorService ex = Executors.newFixedThreadPool(K);
@@ -13,7 +13,7 @@ public class SpeedTest {
             Runnable inputThread = new InputRunnable(e, iFactory);
             ex.execute(inputThread);
         }
-        while (!ex.isTerminated()){};
+        while (!ex.isTerminated()){}
         System.out.println("Done");
     }
 
@@ -40,18 +40,36 @@ public class SpeedTest {
 
     public void speedTestOutput(int N, int k, OutputFactory oFactory) throws IOException {
         Generator gen = new Generator(N);
-        List<Output> streamToTest = new LinkedList<Output>();
-        for(int i = 0 ; i < k ; i++ ) {
-            streamToTest.add(oFactory.getFreshOutputStream("output/output_" + i));
+        numbers = gen.generateNumbers();
+
+        ExecutorService ex = Executors.newFixedThreadPool(k);
+        for( int e = 0; e <= k; e++) {
+            Runnable outputThread = new OutputRunnable(e, oFactory);
+            ex.execute(outputThread);
         }
-        ListIterator<Output> it = streamToTest.listIterator();
-        int randomNumbers[] = gen.generateNumbers();
-        for(int j = 0 ; j < k ; j++ ) {
-            Output test = it.next();
-            for(int i = 0 ; i < N ; i++ ) {
-                test.write(randomNumbers[i]);
+        while (!ex.isTerminated()){}
+        System.out.println("Done");
+    }
+
+    public static class OutputRunnable implements Runnable {
+        private final int i;
+        private final OutputFactory iFactory;
+
+        OutputRunnable(int i, OutputFactory iFactory){
+            this.i = i;
+            this.iFactory = iFactory;
+        }
+        @Override
+        public void run(){
+            try {
+                Output output = iFactory.getFreshOutputStream("output/output_" + i);
+                for (int i : numbers){
+                    output.write(i);
+                }
+                output.close();
+            }catch (IOException e){
+                e.printStackTrace();
             }
         }
     }
-
 }

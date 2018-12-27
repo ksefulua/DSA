@@ -15,8 +15,8 @@ public class Main {
 //            Generator gen = new Generator(37500000);
 //            gen.generateFiles();
             SpeedTest test = new SpeedTest();
-            InputFactory inputFactory = new Input1Factory();
-            test.speedTestInPut(37500000,30,inputFactory);
+            OutputFactory inputFactory = new Output4Factory(100);
+            test.speedTestOutput(500,5,inputFactory);
 
             /*
             OutputFactory outputFactory = new Output4Factory(100);
