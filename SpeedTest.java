@@ -1,22 +1,39 @@
 import java.util.*;
 import java.io.IOException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SpeedTest {
 
 
-    public void speedTestInPut(int N, int K, InputFactory iFactory) throws IOException {
-        for( int e = 1; e <= K; e++) {
-            System.out.println(e);
-            List<Input> streamToTest = new LinkedList<Input>();
-            for(int i = 0 ; i < e ; i++ ) {
-                streamToTest.add(iFactory.getFreshInputStream("testFiles/testfile_" + i));
-            }
-            ListIterator<Input> it = streamToTest.listIterator();
-            for(int j = 0 ; j < e ; j++ ) {
-                Input test = it.next();
-                for(int i = 0 ; i < N ; i++ ) {
-                    test.readNext();
+    public void speedTestInPut(int N, int K, InputFactory iFactory) {
+        ExecutorService ex = Executors.newFixedThreadPool(K);
+        for( int e = 0; e <= K; e++) {
+            Runnable inputThread = new InputRunnable(e, iFactory);
+            ex.execute(inputThread);
+        }
+        while (!ex.isTerminated()){};
+        System.out.println("Done");
+    }
+
+    public static class InputRunnable implements Runnable {
+        private final int i;
+        private final InputFactory iFactory;
+
+        InputRunnable(int i, InputFactory iFactory){
+            this.i = i;
+            this.iFactory = iFactory;
+        }
+        @Override
+        public void run(){
+            try {
+                Input input = iFactory.getFreshInputStream("testFiles/testfile_" + i);
+                while (!input.endOfStream()){
+                    input.readNext();
                 }
+            }catch (IOException e){
+                e.printStackTrace();
             }
         }
     }
