@@ -8,7 +8,7 @@ public abstract class Input implements Comparable<Input> {
 
     public abstract boolean endOfStream() throws IOException;
 
-    public abstract close() throws IOException;
+    public abstract void close() throws IOException;
 
     public int getCurrentValue() {
         return current;
