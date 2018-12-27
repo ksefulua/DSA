@@ -11,7 +11,6 @@ class Generator {
     private static final int MIN_VALUE = Integer.MIN_VALUE;
 
 
-
     public Generator (int numberOfint ) {
         _numberOfint = numberOfint;
         _rand = new Random();

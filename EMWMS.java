@@ -68,7 +68,7 @@ public class EMWMS {
     private Input save(int numberToSort) throws IOException{
         String fileName = "temp" + ++tempFile + ".txt";
         Output out = outputFactory.getFreshOutputStream(fileName);
-        for(int i = 0 ; i < numberToSort ; i++ ){
+        for(int i = 0 ; i < numberToSort ; i++ ) {
             out.write(memoryAvailable[i]);
         }
         out.close();
@@ -90,12 +90,12 @@ public class EMWMS {
         }
         Input in = sortedInput.remove(0);
         while(!in.endOfStream()) {
-            System.out.print(in.readNext() + " ");
+//            System.out.print(in.readNext() + " ");
         }
         System.out.println();
         for(int i = 0 ; i < tempFile ; i++ ) {
             File temp = new File("temp" + i + ".txt");
-//            temp.delete();
+            temp.delete();
         }
     }
 

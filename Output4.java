@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.ByteBuffer;
 
 public class Output4 implements Output {
     private int i = 0;
@@ -30,6 +31,8 @@ public class Output4 implements Output {
     @Override
     public void close() {
         try {
+            mbb.force();
+            ofc.truncate(n+i);
             ofc.close();
         }
         catch (IOException e) {
