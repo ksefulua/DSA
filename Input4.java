@@ -37,7 +37,7 @@ public class Input4 extends Input {
 
     @Override
     public int readNext() throws IOException{
-        if (isFull()){
+        if (filePortionIsRead()){
             mapNextFileChunk();
         }
         current = mappedRegion.getInt();
@@ -51,7 +51,7 @@ public class Input4 extends Input {
         return totalSize - n - i <= 0;
     }
 
-    private boolean isFull(){
+    private boolean filePortionIsRead(){
         return (mappedRegion.position() == mappedRegion.capacity());
     }
 
