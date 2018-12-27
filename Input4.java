@@ -1,53 +1,58 @@
 import java.io.File;
+import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.MappedByteBuffer;
-import java.nio.file.StandardOpenOption;
 import java.io.IOException;
-import java.nio.file.Path;
 
 public class Input4 extends Input {
-    private static final int INTSIZE = 4;
+    private static final int INTSIZE = Integer.BYTES;
     private MappedByteBuffer mappedRegion;
-    private FileChannel fileChannel;
-    private int i;
-    private int allreadyMaped;
-    private static int B = 1000;
+    private FileChannel ifc;
+    private int i = 0;
+    private int n = 0;
+    private static int BUFF_SIZE = 59 * INTSIZE;
+    private long mappedPortionSize;
     private long totalSize;
 
 
-    @Override public void open(String filename){
-        allreadyMaped = 0;
-        i=0;
+    @Override public void open(String fileName){
         try {
-            File file = new File(filename);
-            Path path = file.toPath();
-            totalSize = file.length();
-            fileChannel = FileChannel.open(path, StandardOpenOption.READ);
-            mapping();
+            ifc = new RandomAccessFile(new File(fileName), "r").getChannel();
+            totalSize = ifc.size();
+            mappedPortionSize = Math.min((long) BUFF_SIZE ,totalSize);
+            mappedRegion = ifc.map(FileChannel.MapMode.READ_ONLY, n, mappedPortionSize);
         }catch (IOException e){
             e.printStackTrace();
         }
 
     }
 
-    private void  mapping() throws IOException{
-        mappedRegion = fileChannel.map(FileChannel.MapMode.READ_ONLY, allreadyMaped, Math.max((long)B*INTSIZE,totalSize));
-        allreadyMaped += mappedRegion.capacity();
+    private void mapNextFileChunk() throws IOException{
+        mappedPortionSize = Math.max(BUFF_SIZE, totalSize - n - i);
+        n += i;
+        i = 0;
+        mappedRegion.clear();
+        mappedRegion = ifc.map(FileChannel.MapMode.READ_ONLY, n, mappedPortionSize);
     }
 
     @Override
     public int readNext() throws IOException{
-        i += 4;
-        current = mappedRegion.getInt();
-        if(i>= allreadyMaped && !endOfStream()) {
-            mapping();
+        if (isFull()){
+            mapNextFileChunk();
         }
+        current = mappedRegion.getInt();
+        i += INTSIZE;
+
         return current;
     }
 
     @Override
     public boolean endOfStream() {
-        return !(i < totalSize);
+        return totalSize - n - i <= 0;
+    }
+
+    private boolean isFull(){
+        return (mappedRegion.position() == mappedRegion.capacity());
     }
 
 }
