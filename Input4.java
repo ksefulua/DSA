@@ -27,16 +27,20 @@ public class Input4 extends Input {
 
     }
 
-    private void mapNextFileChunk() throws IOException{
+    private void mapNextFileChunk(){
         mappedPortionSize = Math.max(BUFF_SIZE, totalSize - n - i);
         n += i;
         i = 0;
         mappedRegion.clear();
-        mappedRegion = ifc.map(FileChannel.MapMode.READ_ONLY, n, mappedPortionSize);
+        try {
+            mappedRegion = ifc.map(FileChannel.MapMode.READ_ONLY, n, mappedPortionSize);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public int readNext() throws IOException{
+    public int readNext(){
         if (filePortionIsRead()){
             mapNextFileChunk();
         }

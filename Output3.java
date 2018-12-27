@@ -6,7 +6,7 @@ public class Output3 implements Output {
     private BufferedOutputStream bos;
     private DataOutputStream dos;
     private IntBuffer buffer;
-    private static int BUFFERSIZE = Integer.BYTES*5;
+    private static int BUFFERSIZE = Integer.BYTES * 100;
 
     @Override
     public void create(String fileName){

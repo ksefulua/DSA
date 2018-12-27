@@ -19,7 +19,7 @@ public class Output1 implements Output {
     }
 
     @Override
-    public void write(int integer) throws IOException{
+    public void write(int integer){
         try {
             dos.writeInt(integer);
         }catch (IOException e){
@@ -28,7 +28,7 @@ public class Output1 implements Output {
     }
 
     @Override
-    public void close() throws IOException{
+    public void close(){
         try {
             dos.close();
             os.close();

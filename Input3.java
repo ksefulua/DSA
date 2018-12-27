@@ -8,7 +8,7 @@ public class Input3 extends Input {
     private IntBuffer buffer;
     private int i;
     private int bufferUse;
-    private static int bufferSize = 100;
+    private static int bufferSize = 100 * Integer.BYTES;
     private Input1 input;
 
 
