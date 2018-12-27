@@ -20,7 +20,7 @@ public class Output4 implements Output {
     }
 
     @Override
-    public void write(int integer) {
+    public void write(int integer) throws IOException{
         if(isFull()) {
             flushBuffer();
         }
@@ -29,27 +29,17 @@ public class Output4 implements Output {
     }
 
     @Override
-    public void close() {
-        try {
-            mbb.force();
-            ofc.truncate(n+i);
-            ofc.close();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void close() throws IOException{
+        mbb.force();
+        ofc.truncate(n + i);
+        ofc.close();
     }
 
-    private void flushBuffer() {
+    private void flushBuffer() throws IOException{
         n += i;
         i = 0;
-        try {
-            mbb.clear();
-            mbb = ofc.map(FileChannel.MapMode.READ_WRITE, n, BUFFERSIZE);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+        mbb.clear();
+        mbb = ofc.map(FileChannel.MapMode.READ_WRITE, n, BUFFERSIZE);
     }
 
     private boolean isFull() {

@@ -15,23 +15,13 @@ public class Output1 implements Output {
     }
 
     @Override
-    public void write(int integer) {
-        try {
-            dos.writeInt(integer);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void write(int integer) throws IOException {
+        dos.writeInt(integer);
     }
 
     @Override
-    public void close() {
-        try {
-            dos.close();
-            os.close();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void close() throws IOException{
+        dos.close();
+        os.close();
     }
 }

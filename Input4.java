@@ -23,21 +23,16 @@ public class Input4 extends Input {
         mappedRegion = ifc.map(FileChannel.MapMode.READ_ONLY, n, mappedPortionSize);
     }
 
-    private void mapNextFileChunk() {
+    private void mapNextFileChunk() throws IOException {
         mappedPortionSize = Math.max(BUFF_SIZE, totalSize - n - i);
         n += i;
         i = 0;
         mappedRegion.clear();
-        try {
-            mappedRegion = ifc.map(FileChannel.MapMode.READ_ONLY, n, mappedPortionSize);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+        mappedRegion = ifc.map(FileChannel.MapMode.READ_ONLY, n, mappedPortionSize);
     }
 
     @Override
-    public int readNext() {
+    public int readNext() throws IOException {
         if (filePortionIsRead()) {
             mapNextFileChunk();
         }
@@ -53,6 +48,11 @@ public class Input4 extends Input {
 
     private boolean filePortionIsRead() {
         return (mappedRegion.position() == mappedRegion.capacity());
+    }
+
+    @Override
+    public void close() throws IOException{
+        ifc.close();
     }
 
 }

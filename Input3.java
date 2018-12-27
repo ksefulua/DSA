@@ -14,7 +14,7 @@ public class Input3 extends Input {
         fillBuffer();
     }
 
-    private void fillBuffer() {
+    private void fillBuffer() throws IOException{
         bufferUse = 0;
         i = 0;
         buffer.clear();
@@ -25,7 +25,7 @@ public class Input3 extends Input {
     }
 
     @Override
-    public int readNext() {
+    public int readNext() throws IOException {
         current = buffer.get(i);
         ++i;
         if(endOfStream()) {
@@ -37,6 +37,11 @@ public class Input3 extends Input {
     @Override
     public boolean endOfStream() {
         return !(i < bufferUse);
+    }
+
+    @Override
+    public void close() throws IOException{
+        input.close();
     }
 
 }

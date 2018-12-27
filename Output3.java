@@ -12,13 +12,13 @@ public class Output3 implements Output {
     }
 
     @Override
-    public void write(int integer) {
+    public void write(int integer) throws IOException {
         if (buffer.capacity() == buffer.position())
             flushBuffer();
         buffer.put(integer);
     }
 
-    private void flushBuffer() {
+    private void flushBuffer() throws IOException{
         buffer.flip();
         while (buffer.hasRemaining()) {
             out.write(buffer.get());
@@ -27,7 +27,7 @@ public class Output3 implements Output {
     }
 
     @Override
-    public void close() {
+    public void close()  throws IOException{
         flushBuffer();
         out.close();
     }

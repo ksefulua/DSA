@@ -13,6 +13,9 @@ public class MWMS {
                 input.readNext();
                 queue.add(input);
             }
+            else{
+                input.close();
+            }
         }
     }
 
@@ -23,6 +26,9 @@ public class MWMS {
             if(!(in.endOfStream())) {
                 in.readNext();
                 queue.add(in);
+            }
+            else{
+                in.close();
             }
         }
         out.close();

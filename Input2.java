@@ -18,25 +18,21 @@ public class Input2 extends Input {
     }
 
     @Override
-    public int readNext() {
-        try {
-            current = ds.readInt();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
+    public int readNext() throws IOException {
+        current = ds.readInt();
         return current;
     }
 
     @Override
-    public boolean endOfStream() {
-        try {
-            return !(ds.available() > 0);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return true;
-        }
+    public boolean endOfStream() throws IOException{
+        return !(ds.available() > 0);
+    }
+
+    @Override
+    public void close() throws IOException{
+        ds.close();
+        bis.close();
+        is.close();
     }
 
 }
