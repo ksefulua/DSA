@@ -7,14 +7,24 @@ import java.util.concurrent.Executors;
 public class SpeedTest {
     private static int[] numbers;
 
+    public SpeedTest(int[] numbers){
+        this.numbers = numbers;
+    }
+
     public void speedTestInPut(int K, InputFactory iFactory) {
-        ExecutorService ex = Executors.newFixedThreadPool(K);
+        Thread[] threads = new Thread[30];
         for( int e = 0; e < K; e++) {
-            Runnable inputThread = new InputRunnable(e, iFactory);
-            ex.execute(inputThread);
+            threads[e] = new Thread(new InputRunnable(e, iFactory));
+            threads[e].start();
         }
-        ex.shutdown();
-        while (!ex.isTerminated()) {}
+        try {
+            for(int i = 0; i < K ; i++){
+                threads[i].join();
+            }
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
+
     }
 
     public static class InputRunnable implements Runnable {
@@ -39,17 +49,19 @@ public class SpeedTest {
         }
     }
 
-    public void speedTestOutput(int N, int k, OutputFactory oFactory) throws IOException {
-        Generator gen = new Generator(N);
-        numbers = gen.generateNumbers();
-
-        ExecutorService ex = Executors.newFixedThreadPool(k);
-        for( int e = 0; e < k; e++) {
-            Runnable outputThread = new OutputRunnable(e, oFactory);
-            ex.execute(outputThread);
+    public void speedTestOutput(int N, int K, OutputFactory oFactory) throws IOException {
+        Thread[] threads = new Thread[30];
+        for( int e = 0; e < K; e++) {
+            threads[e] = new Thread(new OutputRunnable(e, oFactory));
+            threads[e].start();
         }
-        ex.shutdown();
-        while (!ex.isTerminated()) {}
+        try {
+            for(int i = 0; i < K ; i++){
+                threads[i].join();
+            }
+        }catch (InterruptedException e){
+            e.printStackTrace();
+        }
     }
 
     public static class OutputRunnable implements Runnable {

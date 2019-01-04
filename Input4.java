@@ -16,15 +16,15 @@ public class Input4 extends Input {
 
 
     public Input4(File file, int B) throws IOException {
-        BUFF_SIZE = B * INTSIZE;
+        BUFF_SIZE = B ;
         ifc = new RandomAccessFile(file, "r").getChannel();
         totalSize = ifc.size();
-        mappedPortionSize = Math.max((long) BUFF_SIZE, totalSize);
+        mappedPortionSize = (totalSize > BUFF_SIZE) ? BUFF_SIZE : (int) totalSize;
         mappedRegion = ifc.map(FileChannel.MapMode.READ_ONLY, n, mappedPortionSize);
     }
 
     private void mapNextFileChunk() throws IOException {
-        mappedPortionSize = Math.max(BUFF_SIZE, totalSize - n - i);
+        mappedPortionSize = (totalSize -n -i  > BUFF_SIZE) ? BUFF_SIZE : (int) (totalSize - n - i);
         n += i;
         i = 0;
         mappedRegion.clear();
