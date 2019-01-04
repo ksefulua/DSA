@@ -40,8 +40,35 @@ public class Main {
         }
     }
 
+    public void sortTest(int n, int M , int d , String file, InputFactory i, OutputFactory o, String testName ){
+        try {
+            SpeedTest speedTest = new SpeedTest();
+            StopWatch stopWatch = new Log4JStopWatch(testName + "_N-" + n + "_M-" + M + "_D-" + d);
+            EMWMS sorter = new EMWMS(M,d,file, i, o);
+            stopWatch.stop();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public static void main(String[] args)  throws IOException{
         Main obj = new Main();
+        OutputFactory o4 = new Output4Factory(2000000);
+        InputFactory i4 = new Input4Factory(2000000);
+
+        for(int N = 300 ; N <= 30000; N *= 10  ) {
+            new Generator(N).generateFiles();
+            for (int M = 100; M <= 10000000; M *= 10) {
+                for (int d = 10; d <= 1000000; d*= 10){
+                    obj.sortTest(N,M,d,"testFiles/testfile_0",i4, o4,"EMWMS");
+                }
+            }
+        }
+
+
+        /*
         OutputFactory o1 = new Output1Factory();
         OutputFactory o2 = new Output2Factory();
         OutputFactory o3 = new Output3Factory(10000);
@@ -90,7 +117,7 @@ public class Main {
                 obj.inputTest(i4, "Input 4 B_"+ bufferSize, K);
             }
         }
-*/
+
         for(int bufferSize = minBufferSize*100000; bufferSize <= maxBufferSize ; bufferSize *= stepBufferSize){
             for(int i = 0 ; i < averageOver ; i++ ){
                 o4 = new Output4Factory(bufferSize);

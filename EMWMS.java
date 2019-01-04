@@ -1,9 +1,10 @@
 import java.io.File;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Random;
 import java.io.IOException;
-
 
 public class EMWMS {
 
@@ -35,7 +36,7 @@ public class EMWMS {
             for(int j = 0 ; j < numberToSort; j++ ) {
                 memoryAvailable[j] = input.readNext();
             }
-            randomizedQuickSort(0, numberToSort - 1);
+            Arrays.sort(memoryAvailable, 0,numberToSort - 1);
             sortedInput.add(save(numberToSort));
             alreadySort += numberToSort;
         }
@@ -66,7 +67,7 @@ public class EMWMS {
     }
 
     private Input save(int numberToSort) throws IOException{
-        String fileName = "temp" + ++tempFile + ".txt";
+        String fileName = "storage/temp" + ++tempFile + ".txt";
         Output out = outputFactory.getFreshOutputStream(fileName);
         for(int i = 0 ; i < numberToSort ; i++ ) {
             out.write(memoryAvailable[i]);
@@ -84,17 +85,12 @@ public class EMWMS {
                 ++j;
             }
             MWMS combine = new MWMS(toCombine);
-            String fileName = "temp" + ++tempFile + ".txt";
+            String fileName = "storage/temp" + ++tempFile + ".txt";
             combine.merge(outputFactory.getFreshOutputStream(fileName));
             sortedInput.add(inputFactory.getFreshInputStream(fileName));
         }
-        Input in = sortedInput.remove(0);
-        while(!in.endOfStream()) {
-//            System.out.print(in.readNext() + " ");
-        }
-        System.out.println();
         for(int i = 0 ; i < tempFile ; i++ ) {
-            File temp = new File("temp" + i + ".txt");
+            File temp = new File("storage/temp" + i + ".txt");
             temp.delete();
         }
     }

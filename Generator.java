@@ -22,9 +22,9 @@ class Generator {
     }
 
     public void generateFiles() throws IOException {
-        for(int i = 0; i < 30; i++) {
+        for(int i = 0; i < 1; i++) {
             String filename = "testFiles/testfile_" + i;
-            Output o = new Output4(new File(filename), 1000);
+            Output o = new Output4(new File(filename), 5000);
             int[] numbers = generateNumbers();
             for (int j : numbers) {
                 o.write(j);
