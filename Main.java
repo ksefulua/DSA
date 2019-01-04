@@ -58,6 +58,7 @@ public class Main {
         OutputFactory o4 = new Output4Factory(2000000);
         InputFactory i4 = new Input4Factory(2000000);
 
+
         for(int N = 300 ; N <= 30000; N *= 10  ) {
             new Generator(N).generateFiles();
             for (int M = 100; M <= 10000000; M *= 10) {
