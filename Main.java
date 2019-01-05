@@ -8,10 +8,11 @@ import java.io.File;
 public class Main {
 
     private final static Logger logger = Logger.getLogger(Main.class);
+    private static int[] numbers = new Generator(25000000).generateNumbers();
 
     private  void outputTest(OutputFactory outputFactory, String test, int k, int N) {
         try {
-            SpeedTest speedTest = new SpeedTest();
+            SpeedTest speedTest = new SpeedTest(numbers);
             StopWatch stopWatch = new Log4JStopWatch(test + " " + k);
             speedTest.speedTestOutput(N, k, outputFactory);
             stopWatch.stop();
@@ -23,7 +24,7 @@ public class Main {
 
     private void inputTest(InputFactory inputFactory, String test, int k) {
         try {
-            SpeedTest speedTest = new SpeedTest();
+            SpeedTest speedTest = new SpeedTest(new int[1]);
             StopWatch stopWatch = new Log4JStopWatch(test + " " + k);
             speedTest.speedTestInPut(k, inputFactory);
             stopWatch.stop();
@@ -42,7 +43,6 @@ public class Main {
 
     public void sortTest(int n, int M , int d , String file, InputFactory i, OutputFactory o, String testName ){
         try {
-            SpeedTest speedTest = new SpeedTest();
             StopWatch stopWatch = new Log4JStopWatch(testName + "_N-" + n + "_M-" + M + "_D-" + d);
             EMWMS sorter = new EMWMS(M,d,file, i, o);
             stopWatch.stop();
@@ -52,20 +52,57 @@ public class Main {
         }
 
     }
+    void deleteDirectoryRecursionJava6(File file) throws IOException {
+        if (file.isDirectory()) {
+            File[] entries = file.listFiles();
+            if (entries != null) {
+                for (File entry : entries) {
+                    deleteDirectoryRecursionJava6(entry);
+                }
+            }
+        }
+        if (!file.delete()) {
+            throw new IOException("Failed to delete " + file);
+        }
+    }
 
     public static void main(String[] args)  throws IOException{
         Main obj = new Main();
-        OutputFactory o4 = new Output4Factory(2000000);
-        InputFactory i4 = new Input4Factory(2000000);
+        OutputFactory o3 = new Output4Factory(2000000);
+        InputFactory i3 = new Input4Factory(2000000);
+
+        int K = 30;
+        int N = 25000000;
+        int averageOver = 1;
+        int maxBufferSize = 2000000;
+        int minBufferSize = 2000;
+        int stepBufferSize = 10;
+
+        for(int i = 1 ; i < K ; i += 1){
+            o3 = new Output3Factory(200000);
+            obj.outputTest(o3, "Output3 ", i, N);
+            obj.deleteOutputfiles(K);
+        }
+
+        for(int i = 1 ; i < K ; i += 1){
+                i3 = new Input3Factory(200000);
+                obj.inputTest(i3, "Input3 ", i);
+        }
 
 
-        for(int N = 300 ; N <= 30000; N *= 10  ) {
+/*
+
+
+        for(int N = 250000000 ; N <= 500000000; N *= 10  ) {
             new Generator(N).generateFiles();
-            for (int M = 100; M <= 10000000; M *= 10) {
+            for (int M = 50000000; M <= 50000000; M *= 10) {
                 for (int d = 10; d <= 1000000; d*= 10){
-                    obj.sortTest(N,M,d,"testFiles/testfile_0",i4, o4,"EMWMS");
+                    obj.sortTest(N,M,d,"testFiles\\testfile_0",i4, o4,"EMWMS");
+                    //obj.deleteDirectoryRecursionJava6(new File("storage"));
                 }
             }
+            File file = new File("testFiles\\testfile_0");
+            file.delete();
         }
 
 
