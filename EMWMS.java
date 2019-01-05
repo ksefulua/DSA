@@ -42,30 +42,6 @@ public class EMWMS {
         }
     }
 
-    private void randomizedQuickSort(int s, int e) {
-        if(s < e ) {
-            int randomIndex = new Random().nextInt(e - s) + s;
-            int pivot = memoryAvailable[randomIndex];
-            swap(randomIndex, e);
-            int i = s - 1 ;
-            for(int j = s ; j < e ; j++ ) {
-                if(memoryAvailable[j] <= pivot) {
-                    i++;
-                    swap( i, j);
-                }
-            }
-            swap(i + 1, e);
-            randomizedQuickSort(s, i);
-            randomizedQuickSort(i + 2, e);
-        }
-    }
-
-    private void swap(int i1, int i2) {
-        int buffer = memoryAvailable[i1];
-        memoryAvailable[i1] = memoryAvailable[i2];
-        memoryAvailable[i2] = buffer;
-    }
-
     private Input save(int numberToSort) throws IOException{
         String fileName = "storage/temp" + ++tempFile + ".txt";
         Output out = outputFactory.getFreshOutputStream(fileName);

@@ -21,8 +21,8 @@ class Generator {
         return _rand.ints(_numberOfint, MIN_VALUE, MAX_VALUE).toArray();
     }
 
-    public void generateFiles() throws IOException {
-        for(int i = 0; i < 1; i++) {
+    public void generateFiles(int numberOfFiles) throws IOException {
+        for(int i = 0; i < numberOfFiles; i++) {
             String filename = "testFiles/testfile_" + i;
             Output o = new Output4(new File(filename), 5000);
             int[] numbers = generateNumbers();
