@@ -3,7 +3,7 @@ import java.util.*;
 import java.util.Random;
 import java.util.stream.IntStream;
 import java.io.File;
-//50 is the maximum and the 1 is our minimum
+
 class Generator {
 
     private int _numberOfint;
